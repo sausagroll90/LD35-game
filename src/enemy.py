@@ -27,13 +27,8 @@ class Enemy:
         self.rect = pygame.Rect(self.x, self.y, 40, 40)
 
     def update(self, dt, time):
-<<<<<<< HEAD
-        self.x += self.dx * (dt / 1000) * ((time + 2) / 2)
-        self.y += self.dy * (dt / 1000) * ((time + 2) / 2)
-=======
         self.x += self.dx * (dt / 1000) * ((time + 4.5) / 4.0)
         self.y += self.dy * (dt / 1000) * ((time + 4.5) / 4.0)
->>>>>>> 9f6d3fb128e17d708ca9a72267aadb19260ac097
         self.rect = pygame.Rect(self.x, self.y, 40, 40)
 
     def draw(self, screen):
