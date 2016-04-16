@@ -3,7 +3,7 @@ import src.enemy
 import random
 
 class Gameloop:
-	def __init__(self, screen, done, clock, player, spawnslist, font):
+	def __init__(self, screen, done, clock, player, spawnslist, font, titlefont):
 		self.screen = screen
 		self.done = done
 		self.clock = clock
@@ -16,23 +16,54 @@ class Gameloop:
 		self.counter = 0
 		self.statestack = []
 		self.font = font
+		self.titlefont = titlefont
+		self.selection = 0
 
 	def game_over_state(self):
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				self.done = True
+			elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+				self.done = True
 		if pygame.key.get_pressed()[pygame.K_SPACE]:
-			self.statestack = []
+			self.statestack = [self.main_state]
 			self.overalltime = 0
 			self.counter = 0
 			self.overalltime = 0
 			self.enemies = []
-			self.spawns = []
-			for spawn in self.spawnslist[0]:
-				self.spawns.append(spawn)
-		text = self.font.render("Your score:   Press space to restart", False, (255, 255, 255))
+			self.spawns = self.spawnslist[0]
+		text1 = self.font.render("Your score: ", False, (255, 255, 255))
+		text2 = self.font.render("Space to restart, Esc to quit", False, (255, 255, 255))
 		self.screen.fill((0, 0, 0))
-		self.screen.blit(text, (100, 290))
+		self.screen.blit(text1, (200, 270))
+		self.screen.blit(text2, (130, 310))
+		pygame.display.flip()
+
+	def menu_buttons(self, key):
+		if key == pygame.K_UP or key == pygame.K_DOWN:
+			self.selection = (self.selection + 1) % 2
+		if key == pygame.K_SPACE or key == pygame.K_RETURN:
+			if self.selection == 0:
+				self.statestack.append(self.main_state)
+			elif self.selection == 1:
+				self.done = True
+
+	def menu_state(self):
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				self.done = True
+			elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+				self.done = True
+			if event.type == pygame.KEYDOWN:
+				self.menu_buttons(event.key)
+		title = self.titlefont.render("BeatBox", False, (255, 255, 255))
+		text1 = self.font.render("Start", False, (255, 255, 255))
+		text2 = self.font.render("Quit", False, (255, 255, 255))
+		self.screen.fill((0, 0, 0))
+		self.screen.blit(title, (130, 60))
+		self.screen.blit(text1, (265, 250))
+		self.screen.blit(text2, (267, 390))
+		pygame.draw.rect(self.screen, (255, 255, 255), (228, 225 + (self.selection * 140), 130, 70), 3)
 		pygame.display.flip()
 
 	def handle_keypress(self, key):
@@ -48,6 +79,8 @@ class Gameloop:
 	def handle_events(self):
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
+				self.done = True
+			elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
 				self.done = True
 			if event.type == pygame.KEYDOWN:
 				self.handle_keypress(event.key)
@@ -86,7 +119,6 @@ class Gameloop:
 
 	def run_current_state(self):
 		while not self.done:
-			print(len(self.enemies))
 			if len(self.statestack) == 0:
-				self.statestack.append(self.main_state)
+				self.statestack.append(self.menu_state)
 			self.statestack[-1]()
