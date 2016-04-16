@@ -31,9 +31,10 @@ class Gameloop:
 			self.overalltime = 0
 			self.counter = 0
 			self.overalltime = 0
+			self.player.score = 0
 			self.enemies = []
 			self.spawns = self.spawnslist[0]
-		text1 = self.font.render("Your score: ", False, (255, 255, 255))
+		text1 = self.font.render("Your score: " + str(self.player.score), False, (255, 255, 255))
 		text2 = self.font.render("Space to restart, Esc to quit", False, (255, 255, 255))
 		self.screen.fill((0, 0, 0))
 		self.screen.blit(text1, (200, 270))
@@ -97,11 +98,17 @@ class Gameloop:
 				self.spawns.remove(spawn)
 		if self.player.update(self.enemies) == "game over":
 			self.enemies = []
+			print(self.overalltime)
 			self.statestack.append(self.game_over_state)
 		if len(self.spawns) == 0:
 			self.counter = 0
-			random.seed()
-			select = random.randint(0, 2)
+			random.seed(round((self.player.score ^ 2) * self.dt))
+			if self.overalltime < 20:
+				select = random.randint(0, 4)
+			elif self.overalltime < 40:
+				select = random.randint(0, 8)
+			else:
+				select = random.randint(0, 9)
 			for i in self.spawnslist[select]:
 				self.spawns.append(i)
 
@@ -109,6 +116,8 @@ class Gameloop:
 		self.screen.fill((0, 0, 0))
 		if self.overalltime < 5:
 			self.screen.blit(self.background, (0, 0))
+		score = self.font.render("Score: " + str(self.player.score), False, (255, 255, 255))
+		self.screen.blit(score, (5, 5))
 		self.player.draw(self.screen)
 		for enemy in self.enemies:
 			enemy.draw(self.screen)
