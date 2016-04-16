@@ -33,7 +33,15 @@ class Player:
                 enemies.remove(enemy)
         return enemies
 
+    def update(self, enemies):
+        for enemy in enemies:
+            if self.rect.colliderect(enemy.rect):
+                return "game over"
+                break
+        else:
+            return True
+
     def draw(self, screen):
-        pygame.draw.rect(screen, (0, 0, 0), self.rect)
+        pygame.draw.rect(screen, (255, 255, 255), self.rect)
         for zone in self.zones:
-            pygame.draw.rect(screen, (0, 255, 255), zone, 2)
+            pygame.draw.rect(screen, (255, 255, 255), zone, 2)

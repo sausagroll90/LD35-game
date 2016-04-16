@@ -2,8 +2,8 @@ import pygame
 from src.setup import *
 import src.gameloop
 
-mainloop = src.gameloop.Gameloop(screen, False, clock, player1, spawns)
+mainloop = src.gameloop.Gameloop(screen, False, clock, player1, spawnslist, font)
 
-mainloop.main_loop()
+mainloop.run_current_state()
 
 pygame.quit()
