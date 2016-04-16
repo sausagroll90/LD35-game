@@ -3,7 +3,7 @@ import src.enemy
 import random
 
 class Gameloop:
-	def __init__(self, screen, done, clock, player, spawnslist, font, titlefont):
+	def __init__(self, screen, done, clock, player, spawnslist, font, titlefont, background):
 		self.screen = screen
 		self.done = done
 		self.clock = clock
@@ -18,6 +18,7 @@ class Gameloop:
 		self.font = font
 		self.titlefont = titlefont
 		self.selection = 0
+		self.background = background
 
 	def game_over_state(self):
 		for event in pygame.event.get():
@@ -106,6 +107,8 @@ class Gameloop:
 
 	def draw_to_screen(self):
 		self.screen.fill((0, 0, 0))
+		if self.overalltime < 5:
+			self.screen.blit(self.background, (0, 0))
 		self.player.draw(self.screen)
 		for enemy in self.enemies:
 			enemy.draw(self.screen)

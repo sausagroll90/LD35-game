@@ -10,6 +10,7 @@ pygame.display.set_caption("BeatBox")
 clock = pygame.time.Clock()
 font = pygame.font.Font("res/thefont.ttf", 20)
 titlefont = pygame.font.Font("res/thefont.ttf", 80)
+background = pygame.image.load("res/background.png")
 
 player1 = src.player.Player()
 
