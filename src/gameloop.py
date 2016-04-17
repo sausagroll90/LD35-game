@@ -1,6 +1,7 @@
 import pygame
 import src.enemy
 import random
+from src.setup import *
 
 class Gameloop:
 	def __init__(self, screen, done, clock, player, spawnslist, font, titlefont, background):
@@ -19,6 +20,10 @@ class Gameloop:
 		self.titlefont = titlefont
 		self.selection = 0
 		self.background = background
+		self.lalpha = 0
+		self.ralpha = 0
+		self.talpha = 0
+		self.balpha = 0
 
 	def game_over_state(self):
 		for event in pygame.event.get():
@@ -71,12 +76,16 @@ class Gameloop:
 	def handle_keypress(self, key):
 		if key == pygame.K_LEFT:
 			self.enemies = self.player.left(self.enemies)
+			self.lalpha = 255
 		if key == pygame.K_RIGHT:
 			self.enemies = self.player.right(self.enemies)
+			self.ralpha = 255
 		if key == pygame.K_UP:
 			self.enemies = self.player.up(self.enemies)
+			self.talpha = 255
 		if key == pygame.K_DOWN:
 			self.enemies = self.player.down(self.enemies)
+			self.balpha = 255
 
 	def handle_events(self):
 		for event in pygame.event.get():
@@ -87,6 +96,31 @@ class Gameloop:
 			if event.type == pygame.KEYDOWN:
 				self.handle_keypress(event.key)
 
+	def flashes(self):
+		if self.lalpha > 0:
+			self.lalpha -= self.dt * 1.5
+		if self.lalpha < 0:
+			self.lalpha = 0
+		lflash.set_alpha(self.lalpha)
+
+		if self.ralpha > 0:
+			self.ralpha -= self.dt * 1.5
+		if self.ralpha < 0:
+			self.ralpha = 0
+		rflash.set_alpha(self.ralpha)
+
+		if self.talpha > 0:
+			self.talpha -= self.dt * 1.5
+		if self.talpha < 0:
+			self.talpha = 0
+		tflash.set_alpha(self.talpha)
+
+		if self.balpha > 0:
+			self.balpha -= self.dt * 1.5
+		if self.balpha < 0:
+			self.balpha = 0
+		bflash.set_alpha(self.balpha)
+
 	def do_updates(self):
 		for enemy in self.enemies:
 			enemy.update(self.dt, self.overalltime)
@@ -96,7 +130,7 @@ class Gameloop:
 			if self.counter > spawn[0]:
 				self.enemies.append(src.enemy.Enemy(spawn[1]))
 				self.spawns.remove(spawn)
-		if self.player.update(self.enemies) == "game over":
+		if self.player.update(self.enemies, self.dt) == "game over":
 			self.enemies = []
 			print(self.overalltime)
 			self.statestack.append(self.game_over_state)
@@ -111,6 +145,7 @@ class Gameloop:
 				select = random.randint(0, 9)
 			for i in self.spawnslist[select]:
 				self.spawns.append(i)
+		self.flashes()
 
 	def draw_to_screen(self):
 		self.screen.fill((0, 0, 0))
@@ -118,7 +153,11 @@ class Gameloop:
 			self.screen.blit(self.background, (0, 0))
 		score = self.font.render("Score: " + str(self.player.score), False, (255, 255, 255))
 		self.screen.blit(score, (5, 5))
-		self.player.draw(self.screen)
+		self.player.draw(self.screen, self.dt)
+		self.screen.blit(lflash, (200, 280))
+		self.screen.blit(rflash, (360, 280))
+		self.screen.blit(tflash, (280, 200))
+		self.screen.blit(bflash, (280, 360))
 		for enemy in self.enemies:
 			enemy.draw(self.screen)
 		pygame.display.flip()

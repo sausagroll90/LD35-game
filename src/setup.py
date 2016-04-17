@@ -2,17 +2,32 @@ import pygame
 import src.player
 import src.enemy
 
+pygame.mixer.pre_init(22050, -16, 2, 512)
+
 pygame.init()
 
 size = (600, 600)
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption("BeatBox")
 clock = pygame.time.Clock()
+
 font = pygame.font.Font("res/thefont.ttf", 20)
 titlefont = pygame.font.Font("res/thefont.ttf", 80)
 background = pygame.image.load("res/background.png")
+lflash = pygame.image.load("res/whitesquare.png").convert()
+rflash = pygame.image.load("res/whitesquare.png").convert()
+tflash = pygame.image.load("res/whitesquare.png").convert()
+bflash = pygame.image.load("res/whitesquare.png").convert()
+redflash = pygame.image.load("res/red.png").convert()
+redflash.set_alpha()
+pimg = pygame.image.load("res/particle.png").convert()
 
-player1 = src.player.Player()
+hit = pygame.mixer.Sound("res/hit.wav")
+hit.set_volume(0.5)
+miss = pygame.mixer.Sound("res/miss.wav")
+miss.set_volume(0.4)
+
+player1 = src.player.Player(redflash, pimg, hit, miss)
 
 spawns1 = [
     [1, "left"],
