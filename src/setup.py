@@ -23,11 +23,13 @@ redflash.set_alpha()
 pimg = pygame.image.load("res/particle.png").convert()
 
 hit = pygame.mixer.Sound("res/hit.wav")
-hit.set_volume(0.5)
+hit.set_volume(0.7)
 miss = pygame.mixer.Sound("res/miss.wav")
-miss.set_volume(0.4)
+miss.set_volume(0.5)
+fail = pygame.mixer.Sound("res/fail.wav")
+fail.set_volume(0.9)
 
-player1 = src.player.Player(redflash, pimg, hit, miss)
+player1 = src.player.Player(redflash, pimg, hit, miss, fail)
 
 spawns1 = [
     [1, "left"],

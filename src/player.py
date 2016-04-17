@@ -2,7 +2,7 @@ import pygame
 import src.particle
 
 class Player:
-    def __init__(self, red, pimg, hit, miss):
+    def __init__(self, red, pimg, hit, miss, fail):
         self.rect = pygame.Rect(280, 280, 40, 40)
         self.lzone = pygame.Rect(200, 280, 40, 40)
         self.rzone = pygame.Rect(360, 280, 40, 40)
@@ -16,6 +16,7 @@ class Player:
         self.particles = []
         self.hitsound = hit
         self.misssound = miss
+        self.failsound = fail
 
     def left(self, enemies):
         for enemy in enemies:
@@ -85,6 +86,7 @@ class Player:
         self.red.set_alpha(self.redalpha)
         for enemy in enemies:
             if self.rect.colliderect(enemy.rect):
+                self.failsound.play()
                 return "game over"
                 break
         else:

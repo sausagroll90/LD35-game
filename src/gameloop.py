@@ -45,6 +45,7 @@ class Gameloop:
 		self.screen.blit(text1, (200, 270))
 		self.screen.blit(text2, (130, 310))
 		pygame.display.flip()
+		self.dt = self.clock.tick(60)
 
 	def menu_buttons(self, key):
 		if key == pygame.K_UP or key == pygame.K_DOWN:
@@ -52,6 +53,8 @@ class Gameloop:
 		if key == pygame.K_SPACE or key == pygame.K_RETURN:
 			if self.selection == 0:
 				self.statestack.append(self.main_state)
+				self.counter = 0
+				self.overalltime = 0
 			elif self.selection == 1:
 				self.done = True
 
@@ -72,6 +75,7 @@ class Gameloop:
 		self.screen.blit(text2, (267, 390))
 		pygame.draw.rect(self.screen, (255, 255, 255), (228, 225 + (self.selection * 140), 130, 70), 3)
 		pygame.display.flip()
+		self.dt = self.clock.tick(60)
 
 	def handle_keypress(self, key):
 		if key == pygame.K_LEFT:
@@ -132,7 +136,6 @@ class Gameloop:
 				self.spawns.remove(spawn)
 		if self.player.update(self.enemies, self.dt) == "game over":
 			self.enemies = []
-			print(self.overalltime)
 			self.statestack.append(self.game_over_state)
 		if len(self.spawns) == 0:
 			self.counter = 0
